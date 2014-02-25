@@ -73,7 +73,7 @@ or (app name, model name) pairs.
 
 ```python
 
-HAIRDRESSER_BLACKLIST = (
+HAIRDRESSER_WHITELIST = (
     'myapp',
     ('myotherapp', 'mymodel')
 )
