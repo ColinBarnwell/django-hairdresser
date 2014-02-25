@@ -43,10 +43,7 @@ def _perm_model(sender, **kwargs):
             opts.app_label in _HAIRDRESSER_WHITELIST
             or (opts.app_label, opts.model_name) in _HAIRDRESSER_WHITELIST
         ):
-            print 'excluding %s.%s' % (opts.app_label, opts.model_name)
             return
-
-    print 'including %s.%s' % (opts.app_label, opts.model_name)
 
     permission_codenames = [permission[0] for permission in opts.permissions]
 
