@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='django-hairdresser',
-    version='0.1.1',
+    version='0.1.2',
     author='Colin Barnwell',
     packages=['hairdresser'],
     description='Add extra perms to your Django models',
