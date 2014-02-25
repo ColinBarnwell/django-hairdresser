@@ -8,11 +8,6 @@ if hasattr(signals, 'post_migrate'):
     import migrate_django
 
 
-_HAIRDRESSER_ACTIONS = set(getattr(settings, 'HAIRDRESSER_ACTIONS', ['list', 'view']))
-_HAIRDRESSER_BLACKLIST = getattr(settings, 'HAIRDRESSER_BLACKLIST', []) + ['auth', 'contenttypes', 'sites']
-_HAIRDRESSER_WHITELIST = getattr(settings, 'HAIRDRESSER_WHITELIST', None)
-
-
 def _perm_model(sender, **kwargs):
     """
     Add action-based permissions to all valid models according to
@@ -24,6 +19,10 @@ def _perm_model(sender, **kwargs):
     If HAIRDRESSER_WHITELIST setting is declared, then only apps or
     app/model tuples in that list will be included.
     """
+    actions = set(getattr(settings, 'HAIRDRESSER_ACTIONS', ['list', 'view']))
+    blacklist = getattr(settings, 'HAIRDRESSER_BLACKLIST', []) + ['auth', 'contenttypes', 'sites']
+    whitelist = getattr(settings, 'HAIRDRESSER_WHITELIST', None)
+
     opts = sender._meta
 
     # Only add perms to distinct, non-abstract, user-created models
@@ -32,22 +31,22 @@ def _perm_model(sender, **kwargs):
 
     # Skip blacklistsed apps or models
     if (
-        opts.app_label in _HAIRDRESSER_BLACKLIST
-        or (opts.app_label, opts.model_name) in _HAIRDRESSER_BLACKLIST
+        opts.app_label in blacklist
+        or (opts.app_label, opts.model_name) in blacklist
     ):
         return
 
     # Validate against whitelisted apps and models (if any)
-    if _HAIRDRESSER_WHITELIST is not None:
+    if whitelist is not None:
         if not (
-            opts.app_label in _HAIRDRESSER_WHITELIST
-            or (opts.app_label, opts.model_name) in _HAIRDRESSER_WHITELIST
+            opts.app_label in whitelist
+            or (opts.app_label, opts.model_name) in whitelist
         ):
             return
 
     permission_codenames = [permission[0] for permission in opts.permissions]
 
-    for action in _HAIRDRESSER_ACTIONS:
+    for action in actions:
         codename = u'{action}_{model_name}'.format(
             action=action,
             model_name=opts.model_name
